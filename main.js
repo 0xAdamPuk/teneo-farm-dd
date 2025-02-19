@@ -6,25 +6,25 @@ const axios = require('axios');
 const HttpsProxyAgent = require('https-proxy-agent');
 const chalk = require('chalk');
 
-console.log(chalk.cyan.bold(`███████╗██╗     ██╗  ██╗     ██████╗██╗   ██╗██████╗ ███████╗██████╗`));
-console.log(chalk.cyan.bold(`╚══███╔╝██║     ██║ ██╔╝    ██╔════╝╚██╗ ██╔╝██╔══██╗██╔════╝██╔══██╗`));
-console.log(chalk.cyan.bold(`  ███╔╝ ██║     █████╔╝     ██║      ╚████╔╝ ██████╔╝█████╗  ██████╔╝`));
-console.log(chalk.cyan.bold(` ███╔╝  ██║     ██╔═██╗     ██║       ╚██╔╝  ██╔══██╗██╔══╝  ██╔══██╗`));
-console.log(chalk.cyan.bold(`███████╗███████╗██║  ██╗    ╚██████╗   ██║   ██████╔╝███████╗██║  ██║`));
-console.log(chalk.cyan.bold(`╚══════╝╚══════╝╚═╝  ╚═╝     ╚═════╝   ╚═╝   ╚═════╝ ╚══════╝╚═╝  ╚═╝`));
-console.log(chalk.cyan.bold(`                 Running Teneo Node BETA CLI Version                 `));
-console.log(chalk.cyan.bold(`                t.me/zlkcyber *** github.com/zlkcyber                `));
+console.log(chalk.cyan.bold(`╔═╗╔═╦╗─╔╦═══╦═══╦═══╦═══╗`));
+console.log(chalk.cyan.bold(`╚╗╚╝╔╣║─║║╔══╣╔═╗║╔═╗║╔═╗║`));
+console.log(chalk.cyan.bold(`─╚╗╔╝║║─║║╚══╣║─╚╣║─║║║─║║`));
+console.log(chalk.cyan.bold(`─╔╝╚╗║║─║║╔══╣║╔═╣╚═╝║║─║║`));
+console.log(chalk.cyan.bold(`╔╝╔╗╚╣╚═╝║╚══╣╚╩═║╔═╗║╚═╝║`));
+console.log(chalk.cyan.bold(`╚═╝╚═╩═══╩═══╩═══╩╝─╚╩═══╝`));
+console.log(chalk.cyan.bold(`原作者github：github.com/zlkcyber 我的gihub：github.com/Gzgod 本人仅做了汉化处理 `));
+console.log(chalk.cyan.bold(`我的推特：推特雪糕战神@Hy78516012  关注tg频道防失联：https://t.me/xuegaoz`));
 
 let socket = null;
 let pingInterval;
 let countdownInterval;
 let potentialPoints = 0;
-let countdown = "Calculating...";
+let countdown = "计算中...";
 let pointsTotal = 0;
 let pointsToday = 0;
 let retryDelay = 1000;
 
-const auth = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlra25uZ3JneHV4Z2pocGxicGV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjU0MzgxNTAsImV4cCI6MjA0MTAxNDE1MH0.DRAvf8nH1ojnJBc3rD_Nw6t1AV8X_g6gmY_HByG2Mag"
+const auth = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlra25uZ3JneHV4Z2pocGxicGV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjU0MzgxNTAsImV4cCI6MjA0MTAxNDE1MH0.DRAvf8nH1ojnJBc3rD_Nw6t1AV8X_g6gmY_HByG2Mag";
 const reffCode = "OwAG3kib1ivOJG4Y0OCZ8lJETa6ypvsDtGmdhcjB";
 
 const readFileAsync = promisify(fs.readFile);
@@ -66,14 +66,14 @@ async function connectWebSocket(token, proxy) {
   socket.onopen = async () => {
     const connectionTime = new Date().toISOString();
     await setLocalStorage({ lastUpdated: connectionTime });
-    console.log("WebSocket connected at", connectionTime);
+    console.log("WebSocket 已于", connectionTime, "连接成功");
     startPinging();
     startCountdownAndPoints();
   };
 
   socket.onmessage = async (event) => {
     const data = JSON.parse(event.data);
-    console.log("Received message from WebSocket:", data);
+    console.log("收到 WebSocket 消息:", data);
     if (data.pointsTotal !== undefined && data.pointsToday !== undefined) {
       const lastUpdated = new Date().toISOString();
       await setLocalStorage({
@@ -89,7 +89,7 @@ async function connectWebSocket(token, proxy) {
   let reconnectAttempts = 0;
   socket.onclose = () => {
     socket = null;
-    console.log("WebSocket disconnected");
+    console.log("WebSocket 已断开连接");
     stopPinging();
     const delay = Math.min(1000 * 2 ** reconnectAttempts, 30000);
     setTimeout(() => connectWebSocket(token, proxy), delay);
@@ -97,7 +97,7 @@ async function connectWebSocket(token, proxy) {
   };
 
   socket.onerror = (error) => {
-    console.error("WebSocket error:", error);
+    console.error("WebSocket 错误:", error);
   };
 }
 
@@ -127,7 +127,7 @@ function stopPinging() {
 }
 
 process.on('SIGINT', () => {
-  console.log('Received SIGINT. Stopping pinging and disconnecting WebSocket...');
+  console.log('收到 SIGINT 信号。停止 ping 并断开 WebSocket...');
   stopPinging();
   disconnectWebSocket();
   process.exit(0);
@@ -136,7 +136,7 @@ process.on('SIGINT', () => {
 function startCountdownAndPoints() {
   clearInterval(countdownInterval);
   updateCountdownAndPoints();
-  countdownInterval = setInterval(updateCountdownAndPoints, 60 * 1000); // 1 minute interval
+  countdownInterval = setInterval(updateCountdownAndPoints, 60 * 1000); // 1分钟间隔
 }
 
 async function updateCountdownAndPoints() {
@@ -150,7 +150,7 @@ async function updateCountdownAndPoints() {
     if (diff > 0) {
       const minutes = Math.floor(diff / 60000);
       const seconds = Math.floor((diff % 60000) / 1000);
-      countdown = `${minutes}m ${seconds}s`;
+      countdown = `${minutes}分 ${seconds}秒`;
 
       const maxPoints = 25;
       const timeElapsed = now.getTime() - new Date(lastUpdated).getTime();
@@ -166,22 +166,22 @@ async function updateCountdownAndPoints() {
 
       potentialPoints = newPoints;
     } else {
-      countdown = "Calculating...";
+      countdown = "计算中...";
       potentialPoints = 25;
     }
   } else {
-    countdown = "Calculating...";
+    countdown = "计算中...";
     potentialPoints = 0;
   }
-  console.log("Total Points:", pointsTotal, "| Today Points:", pointsToday, "| Countdown:", countdown);
+  console.log("总积分:", pointsTotal, "| 今日积分:", pointsToday, "| 倒计时:", countdown);
   await setLocalStorage({ potentialPoints, countdown });
 }
 
 async function getUserId(proxy) {
   const loginUrl = "https://auth.teneo.pro/api/login";
 
-  rl.question('Email: ', (email) => {
-    rl.question('Password: ', async (password) => {
+  rl.question('邮箱: ', (email) => {
+    rl.question('密码: ', async (password) => {
       try {
         const response = await axios.post(loginUrl, {
           email: email,
@@ -198,7 +198,7 @@ async function getUserId(proxy) {
         await startCountdownAndPoints();
         await connectWebSocket(access_token, proxy);
       } catch (error) {
-        console.error('Error:', error.response ? error.response.data : error.message);
+        console.error('错误:', error.response ? error.response.data : error.message);
       } finally {
         rl.close();
       }
@@ -210,9 +210,9 @@ async function registerUser() {
   const isExistUrl = 'https://auth.teneo.pro/api/check-user-exists';
   const signupUrl = "https://node-b.teneo.pro/auth/v1/signup";
 
-  rl.question('Enter your email: ', (email) => {
-    rl.question('Enter your password: ', (password) => {
-      rl.question('Enter invited_by code: ', async (invitedBy) => {
+  rl.question('请输入您的邮箱: ', (email) => {
+    rl.question('请输入您的密码: ', (password) => {
+      rl.question('请输入邀请码: ', async (invitedBy) => {
         try {
           const isExist = await axios.post(isExistUrl, { email: email }, {
             headers: {
@@ -221,7 +221,7 @@ async function registerUser() {
           });
 
           if (isExist && isExist.data && isExist.data.exists) {
-            console.log('User already exists, please just login with:', email);
+            console.log('用户已存在，请直接使用以下邮箱登录:', email);
             return;
           } else {
             const response = await axios.post(signupUrl, {
@@ -242,9 +242,9 @@ async function registerUser() {
             });
           }
 
-          console.log('Registration successful Please Confirm your email at :', email);
+          console.log('注册成功，请在以下邮箱确认您的账户:', email);
         } catch (error) {
-          console.error('Error during registration:', error.response ? error.response.data : error.message);
+          console.error('注册过程中出错:', error.response ? error.response.data : error.message);
         } finally {
           rl.close();
         }
@@ -257,18 +257,18 @@ async function main() {
   const localStorageData = await getLocalStorage();
   let access_token = localStorageData.access_token;
 
-  rl.question('Do you want to use a proxy? (y/n): ', async (useProxy) => {
+  rl.question('是否使用代理？(y/n): ', async (useProxy) => {
     let proxy = null;
     if (useProxy.toLowerCase() === 'y') {
       proxy = await new Promise((resolve) => {
-        rl.question('Please enter your proxy URL (e.g., http://username:password@host:port): ', (inputProxy) => {
+        rl.question('请输入您的代理 URL (例如: http://username:password@host:port): ', (inputProxy) => {
           resolve(inputProxy);
         });
       });
     }
 
     if (!access_token) {
-      rl.question('User Token not found. Would you like to:\n1. Register an account\n2. Login to your account\n3. Enter Token manually\nChoose an option: ', async (option) => {
+      rl.question('未找到用户令牌。您想:\n1. 注册一个账户\n2. 登录您的账户\n3. 手动输入令牌\n请选择一个选项: ', async (option) => {
         switch (option) {
           case '1':
             await registerUser();
@@ -277,7 +277,7 @@ async function main() {
             await getUserId(proxy);
             break;
           case '3':
-            rl.question('Please enter your access token: ', async (accessToken) => {
+            rl.question('请输入您的访问令牌: ', async (accessToken) => {
               userToken = accessToken;
               await setLocalStorage({ userToken });
               await startCountdownAndPoints();
@@ -286,19 +286,19 @@ async function main() {
             });
             break;
           default:
-            console.log('Invalid option. Exiting...');
+            console.log('无效选项。正在退出...');
             process.exit(0);
         }
       });
     } else {
-      rl.question('Menu:\n1. Logout\n2. Start Running Node\nChoose an option: ', async (option) => {
+      rl.question('菜单:\n1. 登出\n2. 开始运行节点\n请选择一个选项: ', async (option) => {
         switch (option) {
           case '1':
             fs.unlink('localStorage.json', (err) => {
               if (err) {
-                console.error('Error deleting localStorage.json:', err.message);
+                console.error('删除 localStorage.json 时出错:', err.message);
               } else {
-                console.log('Logged out successfully.');
+                console.log('登出成功。');
                 process.exit(0);
               }
             });
@@ -308,12 +308,12 @@ async function main() {
             await connectWebSocket(access_token, proxy);
             break;
           default:
-            console.log('Invalid option. Exiting...');
+            console.log('无效选项。正在退出...');
             process.exit(0);
         }
       });
     }
   });
 }
-//run
+// 运行
 main();
