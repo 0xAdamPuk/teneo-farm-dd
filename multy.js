@@ -9,10 +9,11 @@ async function readFile(filePath) {
         const tokens = data.split('\n').map(line => line.trim()).filter(line => line);
         return tokens;
     } catch (error) {
-        console.error('Error reading file:', error.message);
+        console.error('读取文件出错:', error.message);
         return [];
     }
 }
+
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
@@ -41,30 +42,30 @@ class WebSocketClient {
 
         this.socket.onopen = () => {
             const connectionTime = new Date().toISOString();
-            console.log("WebSocket connected at", connectionTime);
+            console.log("WebSocket 已于", connectionTime, "连接成功");
             this.reconnectAttempts = 0;
             this.startPinging();
         };
 
         this.socket.onmessage = (event) => {
             const data = JSON.parse(event.data);
-            console.log("Received message from WebSocket:", data);
+            console.log("收到 WebSocket 消息:", data);
         };
 
         this.socket.onclose = () => {
-            console.log("WebSocket disconnected");
+            console.log("WebSocket 已断开连接");
             this.stopPinging();
             this.reconnect();
         };
 
         this.socket.onerror = (error) => {
-            console.error("WebSocket error:", error.message);
+            console.error("WebSocket 错误:", error.message);
         };
     }
 
     reconnect() {
         const delay = Math.min(1000 * 2 ** this.reconnectAttempts, 30000);
-        console.log(`Reconnecting in ${delay / 1000} seconds...`);
+        console.log(`将在 ${delay / 1000} 秒后重新连接...`);
         setTimeout(() => {
             this.reconnectAttempts++;
             this.connect();
@@ -95,10 +96,11 @@ class WebSocketClient {
         }
     }
 }
+
 async function main() {
     try {
         const tokens = await readFile('tokens.txt');
-        rl.question('Do you want to use a proxy? (y/n): ', async (useProxyAnswer) => {
+        rl.question('是否使用代理？(y/n): ', async (useProxyAnswer) => {
             let useProxy = useProxyAnswer.toLowerCase() === 'y';
             let proxies = [];
 
@@ -112,7 +114,7 @@ async function main() {
                 for (let i = 0; i < tokens.length; i++) {
                     const token = tokens[i];
                     const proxy = proxies[i % proxies.length] || null;
-                    console.log(`Connecting WebSocket for account: ${i + 1} - Proxy: ${proxy || 'None'}`);
+                    console.log(`正在为账户 ${i + 1} 连接 WebSocket - 代理: ${proxy || '无'}`);
 
                     const wsClient = new WebSocketClient(token, proxy);
                     wsClient.connect();
@@ -121,18 +123,18 @@ async function main() {
                 }
 
                 process.on('SIGINT', () => {
-                    console.log('Program exited. Stopping pinging and disconnecting All WebSockets...');
+                    console.log('程序退出。正在停止 ping 并断开所有 WebSocket 连接...');
                     wsClients.forEach(client => client.stopPinging());
                     wsClients.forEach(client => client.disconnect());
                     process.exit(0);
                 });
             } else {
-                console.log('No tokens found in tokens.txt - exiting...');
+                console.log('tokens.txt 中未找到令牌 - 正在退出...');
                 process.exit(0);
             }
         });
     } catch (error) {
-        console.error('Error in main function:', error);
+        console.error('主函数出错:', error);
     }
 }
 
