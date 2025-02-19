@@ -1,77 +1,68 @@
 # ᝰ.ᐟ TENEO-NODE
 
-Running Teneo Node BETA, CLI Version. <br>
-Teneo Is an Browser extension Node Based. <br>
+运行 Teneo 节点 BETA，CLI 版本。<br>
+Teneo 是一个基于浏览器扩展的节点。<br>
+通过运行一个访问公共社交媒体数据的节点，您可以获得 $TENEO 代币作为报酬。这很简单、被动，您可以从您贡献的价值中赚取收益。
 
-<img src="https://cdn.prod.website-files.com/665c71122bb2018f6ed3f9c9/66eaaf8660d0ba047f3f2058_screenshot.png" loading="lazy" width="266" height="Auto" alt="" srcset="https://cdn.prod.website-files.com/665c71122bb2018f6ed3f9c9/66eaaf8660d0ba047f3f2058_screenshot-p-500.png 500w, https://cdn.prod.website-files.com/665c71122bb2018f6ed3f9c9/66eaaf8660d0ba047f3f2058_screenshot.png 626w" sizes="(max-width: 479px) 100vw, (max-width: 991px) 33vw, 266px" class="image-32"> <br>
-Get paid in $TENEO Tokens for simply running a node that accesses public social media data. It’s easy, passive, and you earn from the value you contribute.
+## 💡 如何注册
+
+- **无需下载扩展，您可以使用脚本注册**
+
+## 🚨 在运行 Teneo CLI 版本之前的注意事项
+
+我对因使用 CLI 版本运行节点可能导致账户被 `封禁` 的情况不承担 `责任`，因为官方的 `Teneo Node Beta` 并未提供 CLI 版本选项，仅支持 Chrome 扩展。  
+但 `我认为` 没有理由封禁账户，因为这不是作弊，我未在脚本中更改任何内容（心跳间隔 15 分钟，最大 Teneo 积分 25，每日最大积分 2400）。
+
+## 📎 Teneo Node CLI 版本脚本功能
+
+- 注册
+- 登录
+- 运行节点
+- 自动登录
+- 自动重连
 
 
-
-## 💡 How To SignUp (Register)
-
-- **No Need Download the Extension you can register using script**
-![alt text](image.png)
+## 📌 使用 Javascript/NodeJs 运行的截图
 
 
-## 🚨 Attention Before Running Teneo Cli Version
-
-I am not `responsible` for the possibility of an account being `banned`, due to running node in the CLI, because Officially `Teneo Node Beta` does not provide an option for the CLI version, only with the Chrome extension.
-but `I think` there is no reason to ban the account, because this is not cheating, I didn't change anything in the script (Heartbeats 15 minutes, maximum teneo points 25, maximum points per day 2400)
-
-## 📎 Teneo Node cli version Script features
-
-- Register
-- Login
-- Running Node
-- AutoLogin
-- AutoReconnect
-
-![alt text](image-2.png)
-
-## 📌  ScreenShot Running With Javascript/NodeJs
-
-![alt text](image-1.png)
-
-## ✎ᝰ. RUNNING 
-- Clone Repository
+## ✎ᝰ. 运行方法
+- 克隆仓库
 ```bash
 git clone https://github.com/Zlkcyber/teneo-farm.git
 cd teneo-farm
 ```
-- Install Dependency
+
+- 安装依赖
 ```bash
 npm install
 ```
-- Run the script its only for 1 account - run multy below for multiple accounts
+
+- 为单账户运行，多账户看下面
 ```bash
 node main.js
 ```
-## run for multy accounts: 
-- Manual put token in `tokens.txt` 1 line 1 token
+
+## 多账户运行: 
+- 手动将 token 放入 tokens.txt，每行一个 token
     ```bash
     nano tokens.txt
     ```
-- proxy (optional) in `proxies.txt`
+- 代理（可选）放入 proxies.txt
     ```bash
     nano proxies.txt
     ```
-    
-### Auto get tokens if you dont want put it manually: 
-- fill `accounts.txt` format : `test@gmail.com|password123` 1 line 1 account
+
+### 如果不想手动放入token，可自动获取： 
+- 填写 accounts.txt，格式为：test@gmail.com|password123，每行一个账户
     ```bash
     nano accounts.txt
     ```
-- run to get tokens
+- 运行以下命令获取token
     ```bash
     node getToken
     ```
 
-- Start multy accounts
+- 启动多账户运行
     ```bash
     node multy
     ```
-
-## ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-
-This project is licensed under the [MIT License](LICENSE).
