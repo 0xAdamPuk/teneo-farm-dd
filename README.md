@@ -28,7 +28,7 @@ Teneo 是一个基于浏览器扩展的节点。<br>
 ## ✎ᝰ. 运行方法
 - 克隆仓库
 ```bash
-git clone https://github.com/Zlkcyber/teneo-farm.git
+git clone https://github.com/Gzgod/teneo-farm.git
 cd teneo-farm
 ```
 
