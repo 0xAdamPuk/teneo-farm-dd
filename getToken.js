@@ -12,7 +12,7 @@ async function readAccounts(filePath) {
         });
         return accounts;
     } catch (err) {
-        throw new Error(`Error reading accounts file: ${err.message}`);
+        throw new Error(`读取账户文件出错: ${err.message}`);
     }
 }
 
@@ -32,37 +32,37 @@ async function login(email, password) {
         const access_token = response.data.access_token;
         return access_token;
     } catch (error) {
-        console.error('Error:', error.response ? error.response.data : error.message);
+        console.error('错误:', error.response ? error.response.data : error.message);
         return null;
     }
 }
 
 async function refreshTokens() {
-    console.log('Processing getting token to all accounts...');
+    console.log('正在为所有账户获取令牌...');
     try {
         await fs.access('tokens.txt');
         await fs.unlink('tokens.txt');
-        console.log('clear old tokens.txt successfully');
+        console.log('成功清除旧的 tokens.txt 文件');
     } catch (error) {
-        console.log('file tokens.txt does not exist, creating new file');
+        console.log('文件 tokens.txt 不存在，将创建新文件');
     }
     try {
         const accounts = await readAccounts('accounts.txt');
         if (!accounts.length) {
-            console.log('No accounts found in the accounts.txt');
+            console.log('accounts.txt 中未找到任何账户');
             return;
         }
         for (const account of accounts) {
-            console.log('Getting access token for:', account.email);
+            console.log('正在为以下账户获取访问令牌:', account.email);
             const token = await login(account.email, account.password);
             if (token) {
-                console.log('Access token:', token);
+                console.log('访问令牌:', token);
                 await fs.appendFile('tokens.txt', token + '\n', 'utf8');
-                console.log('Token saved to file tokens.txt');
+                console.log('令牌已保存至 tokens.txt 文件');
             }
         }
     } catch (error) {
-        console.error('Error processing accounts:', error.message);
+        console.error('处理账户时出错:', error.message);
     }
 }
 
