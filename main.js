@@ -105,7 +105,11 @@ async function connectWebSocket(token, proxy) {
   };
 
   socket.onerror = (error) => {
-    console.error("WebSocket 错误:", error);
+    if (proxy) {
+      console.error(`WebSocket 错误 (使用代理 ${proxy}):`, error);
+    } else {
+      console.error("WebSocket 错误:", error);
+    }
   };
 }
 
