@@ -4,6 +4,7 @@ const fs = require('fs');
 const readline = require('readline');
 const axios = require('axios');
 const HttpsProxyAgent = require('https-proxy-agent');
+const SocksProxyAgent = require('socks-proxy-agent'); // 添加对Socks代理的支持
 const chalk = require('chalk');
 
 console.log(chalk.cyan.bold(`╔═╗╔═╦╗─╔╦═══╦═══╦═══╦═══╗`));
@@ -24,7 +25,7 @@ let pointsTotal = 0;
 let pointsToday = 0;
 let retryDelay = 1000;
 
-const auth = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlra25uZ3JneHV4Z2pocGxicGV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjU0MzgxNTAsImV4cCI6MjA0MTAxNDE1MH0.DRAvf8nH1ojnJBc3rD_Nw6t1AV8X_g6gmY_HByG2Mag";
+const auth = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlra25uZ3JneHV4Z2pocGxicGV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjU0MzgxNTAsImV4cCI6MjA0MTAxNDE1MH0.DRAvf8nH1ojnJBc3r[...]
 const reffCode = "OwAG3kib1ivOJG4Y0OCZ8lJETa6ypvsDtGmdhcjB";
 
 const readFileAsync = promisify(fs.readFile);
@@ -58,7 +59,14 @@ async function connectWebSocket(token, proxy) {
 
   const options = {};
   if (proxy) {
-    options.agent = new HttpsProxyAgent(proxy);
+    if (proxy.startsWith('http://') || proxy.startsWith('https://')) {
+      options.agent = new HttpsProxyAgent(proxy);
+    } else if (proxy.startsWith('socks://') || proxy.startsWith('socks5://')) {
+      options.agent = new SocksProxyAgent(proxy);
+    } else {
+      console.error("Unsupported proxy type. Only HTTP(S) and SOCKS proxies are supported."); // 检查代理类型
+      return;
+    }
   }
 
   socket = new WebSocket(wsUrl, options);
@@ -261,7 +269,7 @@ async function main() {
     let proxy = null;
     if (useProxy.toLowerCase() === 'y') {
       proxy = await new Promise((resolve) => {
-        rl.question('请输入您的代理 URL (例如: http://username:password@host:port): ', (inputProxy) => {
+        rl.question('请输入您的代理 URL (例如: http://username:password@host:port 或 socks5://username:password@host:port): ', (inputProxy) => {
           resolve(inputProxy);
         });
       });
